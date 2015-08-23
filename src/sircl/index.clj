@@ -38,18 +38,89 @@ See `document-vector'."
   [file-name]
   (document-vector (file-words file-name)))
 
+(defn make-document-from-file
+  "Returns a Document record from a file."
+  [file-name]
+  (print "Making document from file ")
+  (println (.getPath file-name))
+  (let [content (slurp file-name)
+        vector (document-vector (string-words content))]
+    {:type :document,
+     :filename (.getPath file-name),
+     :content content,
+     :vector vector}))
+
+(defn lookup-term-in-document
+  "Look up the given term in the given document, return term frequency.
+  Return nil if term is not in document."
+  [term document]
+  (get (:vector document) term))
+
 (defn vocabulary-for-document
   "Given a document vector, return its vocabulary.
-See `document-vector' for an explanation what a document vector is.
-The vocabulary is a set of words.
-So `vocabulary-for-document' returns the set of words in the
-document vector."
-  [docvec]
-  (set (keys docvec)))
+  See `document-vector' for an explanation what a document vector is.
+  The vocabulary is a set of words.
+  So `vocabulary-for-document' returns the set of words in the
+  document vector."
+  [document]
+  (let [docvec (:vector document)]
+    (set (keys docvec))))
 
 (defn vocabulary
   "Maps terms to their document frequencies.
 We will use this as a basis to get idf (inverse document frequency).
-Expects a list of vocabularies (see `vocabulary-for-document')."
-  [vocabularies]
-  (frequencies (mapcat list* vocabularies)))
+Expects a list of Documents."
+  [documents]
+  (frequencies (mapcat list* (map vocabulary-for-document documents))))
+
+(defrecord DocumentCollection [directory documents vocabulary])
+
+(defn make-collection
+  [directory & {:keys [nfiles] }]
+  (let [tree (file-seq (io/file directory))
+        files (filter (fn [x] (.isFile x)) tree)
+        maybe-shortened (if nfiles (take nfiles files) files)
+        documents (map make-document-from-file files)]
+    {:type :document-collection,
+     :directory directory,
+     :documents documents,
+     :vocabulary (vocabulary documents)}))
+
+(defn get-inverted-list-entry
+  [term document]
+  (let [x (lookup-term-in-document term document)]
+    (if x
+      {(:filename document) x}
+      nil)))
+
+(defn term-index
+  "Returns an inverted list for `term'.
+  Second arg `documents' is a collection of `Document' records."
+  [term documents]
+  (apply merge (map (fn [d] (get-inverted-list-entry term d))
+                    documents)))
+
+(defn inverted-index
+  "Maps terms to the documents they appear in, with term frequency.
+Use file names to identify documents."
+  [collection]
+  (apply hash-map (mapcat (fn [t] [t (term-index t (:documents collection))]) (keys (:vocabulary collection)))))
+
+(defn make-indexed-collection
+  [document-collection]
+  {:type :indexed-collection,
+   :collection document-collection,
+   :index (inverted-index document-collection)})
+
+(defn write-index-collection-to-file
+  [indexed-collection file-name]
+  (spit file-name indexed-collection))
+
+(defn read-index-collection-from-file
+  [file-name]
+  (slurp file-name))
+
+(defn index-directory [directory-name file-name]
+  (let [coll (make-collection directory-name)
+        idx (make-indexed-collection coll)]
+    (write-index-collection-to-file idx file-name)))

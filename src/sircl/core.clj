@@ -1,4 +1,5 @@
 (ns sircl.core
+  (:require [sircl.index :refer :all])
   (:gen-class))
 
 (defn -main
