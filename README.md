@@ -3,8 +3,8 @@
 Simple Information Retrieval using Clojure Language
 
 This is just a toy project to learn Clojure.  It's my first Clojure
-program.  I spent about 20 hours learning Clojure, and this is the
-result.  I have background in other Lisps.
+program.  I spent between 10 and 20 hours learning Clojure, and this
+is the result.  I have background in other Lisps.
 
 The idea is to take a directory full of text files, then run the
 indexer which produces an index of the words in the files.  Given such
