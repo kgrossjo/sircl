@@ -4,7 +4,8 @@
   (:gen-class))
 
 (defn index-collection
-  "Create an index on disk."
+  "Create an index on disk.
+First arg is index file to create, search arg is directory to index."
   [index directory]
   (printf "Indexing directory %s writing to file %s\n"
           directory index)

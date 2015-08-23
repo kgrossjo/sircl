@@ -3,29 +3,41 @@
 Simple Information Retrieval using Clojure Language
 
 This is just a toy project to learn Clojure.  It's my first Clojure
-program.  It doesn't really do anything yet.
+program.
 
 The idea is to take a directory full of text files, then run the
 indexer which produces an index of the words in the files.  Given such
 an index on disk, a search engine will take a sequence of words and
 perform the search and return a ranked list of documents.
 
-At the moment, there are just a couple of unit tests, there is no
-main program to run.
+Create an uberjar with `lein uberjar`.
 
 ## Installation
 
 Download from https://github.com/kgrossjo/sircl
 
-## Usage
+## Usage for indexing
 
-FIXME: explanation
+Creating an index works like this:
 
-    $ java -jar sircl-0.1.0-standalone.jar [args]
+    $ java -jar sircl-0.1.0-standalone.jar index FILE ROOT
+
+## Usage for searching
+
+Searching a given index works like this:
+
+    $ java -jar sircl-0.1.0-standalone.jar search FILE TERM...
 
 ## Options
 
-FIXME: listing of options this app accepts.
+* `index` or `search` are the command to execute.
+* `FILE` is the name of the file housing the index.
+  It is either written to (command `index`) or read
+  from (command `search`).
+* `ROOT` is the root directory of all documents.
+  A document is a text file.
+* `TERM` can be specified multiple times and gives a
+  search term.
 
 ## Examples
 
