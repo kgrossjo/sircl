@@ -71,6 +71,7 @@ See `document-vector'."
 We will use this as a basis to get idf (inverse document frequency).
 Expects a list of Documents."
   [documents]
+  (println "Computing vocabulary")
   (frequencies (mapcat list* (map vocabulary-for-document documents))))
 
 (defrecord DocumentCollection [directory documents vocabulary])
@@ -114,6 +115,7 @@ Use file names to identify documents."
 
 (defn write-index-collection-to-file
   [indexed-collection file-name]
+  (println "Writing index to disk")
   (spit file-name indexed-collection))
 
 (defn read-index-collection-from-file
