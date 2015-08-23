@@ -42,19 +42,33 @@ Searching a given index works like this:
 
 ## Examples
 
-...
+You could download the CACM collection from
+http://www.search-engines-book.com/collections/ and unpack it in some
+local directory (say `/foo/CACM`).  You could then index this
+collection, writing to the `cacm.idx` file, by running the following:
+
+    $ java -jar sircl-0.1.0-standalone.jar index cacm.idx /foo/CACM
+
+You could then search this index for the words "boolean" and "knuth"
+like this:
+
+    $ java -jar sircl-0.1.0-standalone.jar search cacm.idx boolean knuth
 
 ### Bugs
 
-...
+While the words in the document are normalized (lowercased, mostly),
+this is not applied to the query.
 
-### Any Other Sections
-### That You Think
-### Might be Useful
+There is no stopword elimination.
+
+There is no stemming.
+
+The formula used for ranking is pretty braindead.
+
 
 ## License
 
-Copyright © 2015 FIXME
+Copyright © 2015 Kai Grossjohann
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
