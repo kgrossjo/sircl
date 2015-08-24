@@ -11,11 +11,13 @@ indexer which produces an index of the words in the files.  Given such
 an index on disk, a search engine will take a sequence of words and
 perform the search and return a ranked list of documents.
 
-Create an uberjar with `lein uberjar`.
+This was inspired by `perlindex`, but of course this is just a toy
+whereas `perlindex` is a real program.
 
 ## Installation
 
 Download from https://github.com/kgrossjo/sircl
+Create an uberjar with `lein uberjar`.
 
 ## Usage for indexing
 
@@ -64,6 +66,8 @@ There is no stopword elimination.
 There is no stemming.
 
 The formula used for ranking is pretty braindead.
+
+There is no UI to speak of.
 
 
 ## License
