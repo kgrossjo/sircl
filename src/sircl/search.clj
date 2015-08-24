@@ -40,6 +40,7 @@
 (defn get-document-ranking
   "Given term results, get the overall ranking for a document."
   [term-results file-name]
+  ;; This is not the right formula, but that's not the point.
   (apply + (map (fn [x] (get x file-name 0)) (vals term-results))))
 
 (defn rank-results
