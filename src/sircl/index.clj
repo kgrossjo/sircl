@@ -96,8 +96,6 @@ Expects a list of Documents."
   "Returns an inverted list for `term'.
   Second arg `documents' is a collection of `Document' records."
   [term documents]
-  ;; FIXME use mapcat and hash-map, similar to
-  ;; inverted-index, below.
   (apply hash-map (mapcat (fn [d] (get-inverted-list-entry term d))
                           documents)))
 
