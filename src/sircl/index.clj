@@ -74,14 +74,14 @@ Expects a list of Documents."
   (println "Computing vocabulary")
   (frequencies (mapcat list* (map vocabulary-for-document documents))))
 
-(defrecord DocumentCollection [directory documents vocabulary])
-
 (defn make-collection
   [directory & {:keys [nfiles] }]
   (let [tree (file-seq (io/file directory))
         files (filter (fn [x] (.isFile x)) tree)
         maybe-shortened (if nfiles (take nfiles files) files)
         documents (map make-document-from-file files)]
+    ;; I tried defrecord but that wasn't serialized
+    ;; correctly with `spit'.
     {:type :document-collection,
      :directory directory,
      :documents documents,
@@ -90,25 +90,28 @@ Expects a list of Documents."
 (defn get-inverted-list-entry
   [term document]
   (let [x (lookup-term-in-document term document)]
-    (if x
-      {(:filename document) x}
-      nil)))
+    (if x [(:filename document) x] nil)))
 
 (defn term-index
   "Returns an inverted list for `term'.
   Second arg `documents' is a collection of `Document' records."
   [term documents]
-  (apply merge (map (fn [d] (get-inverted-list-entry term d))
-                    documents)))
+  ;; FIXME use mapcat and hash-map, similar to
+  ;; inverted-index, below.
+  (apply hash-map (mapcat (fn [d] (get-inverted-list-entry term d))
+                          documents)))
 
 (defn inverted-index
   "Maps terms to the documents they appear in, with term frequency.
 Use file names to identify documents."
   [collection]
-  (apply hash-map (mapcat (fn [t] [t (term-index t (:documents collection))]) (keys (:vocabulary collection)))))
+  (apply hash-map (mapcat (fn [t] [t (term-index t (:documents collection))])
+                          (keys (:vocabulary collection)))))
 
 (defn make-indexed-collection
   [document-collection]
+  ;; I tried defrecord, but that wasn't serialized
+  ;; correctly with `spit'.
   {:type :indexed-collection,
    :collection document-collection,
    :index (inverted-index document-collection)})
