@@ -24,13 +24,13 @@
   [idx term]
   (let [inverted-list (get-inverted-list idx term)
         doc-freq (get-document-frequency idx term)]
-    (apply hash-map (mapcat (fn [x] [(first x) (/ (second x) doc-freq)])
-                            inverted-list))))
+    (into {} (map (fn [x] [(first x) (/ (second x) doc-freq)])
+                  inverted-list))))
 
 (defn get-results-for-terms
   "Given an index and some terms, compute the document rankings for all the terms."
   [idx & terms]
-  (apply hash-map (mapcat (fn [x] [x (get-result-for-term idx x)]) terms)))
+  (into {} (map (fn [x] [x (get-result-for-term idx x)]) terms)))
 
 (defn get-documents-for-terms
   "Given document rankings for some terms, compute the list of documents."
