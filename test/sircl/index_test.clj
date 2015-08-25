@@ -117,6 +117,36 @@ Their mother tell them \"shut up your mout' \"
             "two" 2,
             "three" 1}))))
 
+(deftest term-index-test
+  (testing "simple"
+    (let [d1-content "one two three"
+          d1-vector (document-vector (string-words d1-content))
+          d1 {:type :document,
+              :filename "d1",
+              :content d1-content,
+              :vector d1-vector}
+          d2-content "two three three"
+          d2-vector (document-vector (string-words d2-content))
+          d2 {:type :document,
+              :filename "d2",
+              :content d2-content,
+              :vector d2-vector},
+          docs [d1 d2]
+          coll {:type :document-collection,
+                :directory ".",
+                :documents docs,
+                :vocabulary (vocabulary docs)}
+          iv (inverted-index coll)]
+      (is (= (term-index "one" docs)
+             {"d1" 1}))
+      (is (= (term-index "two" docs)
+             {"d1" 1, "d2" 1}))
+      (is (= (term-index "three" docs)
+             {"d1" 1, "d2" 2}))
+      (is (= iv {"one" {"d1" 1},
+                 "two" {"d1" 1, "d2" 1},
+                 "three" {"d1" 1, "d2" 2}})))))
+
 (deftest make-document-from-file-test
   (testing "Harry Belafonte"
     (let [filename "test/resources/harry.txt"
