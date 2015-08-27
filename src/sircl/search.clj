@@ -1,5 +1,6 @@
 (ns sircl.search
-  (:require [clojure.java.io :as io]))
+  (:require [sircl.util :refer :all]
+            [clojure.java.io :as io]))
 
 (defn read-index
   "Read the index structure from disk."
@@ -30,7 +31,7 @@
 (defn get-results-for-terms
   "Given an index and some terms, compute the document rankings for all the terms."
   [idx & terms]
-  (into {} (map (fn [x] [x (get-result-for-term idx x)]) terms)))
+  (map-hash (fn [x] (get-result-for-term idx x)) terms))
 
 (defn get-documents-for-terms
   "Given document rankings for some terms, compute the list of documents."
