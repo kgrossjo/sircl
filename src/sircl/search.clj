@@ -1,6 +1,5 @@
 (ns sircl.search
-  (:rqequire [clojure.java.io :as io]
-            [sircl.util :refer map-hash]))
+  (:require [clojure.java.io :as io]))
 
 (defn read-index
   "Read the index structure from disk."

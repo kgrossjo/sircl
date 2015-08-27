@@ -1,8 +1,7 @@
 (ns sircl.index
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.set :as set]
-            [sircl.util :refer map-hash]))
+            [clojure.set :as set]))
 
 (defn normalize-word
   "Given a sequence of word characters, normalize this as a word.
@@ -97,15 +96,15 @@ Expects a list of Documents."
   "Returns an inverted list for `term'.
   Second arg `documents' is a collection of `Document' records."
   [term documents]
-  (map-hash (fn [d] (get-inverted-list-entry term d))
-            documents))
+  (into {} (map (fn [d] (get-inverted-list-entry term d))
+                documents)))
 
 (defn inverted-index
   "Maps terms to the documents they appear in, with term frequency.
 Use file names to identify documents."
   [collection]
-  (map-hash (fn [t] [t (term-index t (:documents collection))])
-            (keys (:vocabulary collection))))
+  (into {} (map (fn [t] [t (term-index t (:documents collection))])
+                (keys (:vocabulary collection)))))
 
 (defn make-indexed-collection
   [document-collection]
