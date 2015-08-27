@@ -41,12 +41,11 @@ See `document-vector'."
 (defn make-document-from-file
   "Returns a Document record from a file."
   [file-name]
-  (print "Making document from file ")
-  (println (.getPath file-name))
+  (printf "Making document from file %s\n" file-name)
   (let [content (slurp file-name)
         vector (document-vector (string-words content))]
     {:type :document,
-     :filename (.getPath file-name),
+     :filename file-name,
      :content content,
      :vector vector}))
 

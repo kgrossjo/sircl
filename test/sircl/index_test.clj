@@ -105,17 +105,27 @@ Their mother tell them \"shut up your mout' \"
 
 (deftest vocabulary-for-document-test
   (testing "simple"
-    (is (= (vocabulary-for-document {"one" 1, "two", 2})
-           #{"one", "two"}))))
+    (let [d {:type :document,
+             :filename "d",
+             :content "one two",
+             :vector {"one" 1, "two", 2}}]
+      (is (= (vocabulary-for-document d)
+             #{"one", "two"})))))
 
 (deftest vocabulary-test
   (testing "simple"
-    (is (= (vocabulary
-            (list #{"one", "two"}
-                  #{"two", "three"}))
-           {"one" 1,
-            "two" 2,
-            "three" 1}))))
+    (let [d1 {:type :document,
+              :filename "d1",
+              :content "one two",
+              :vector {"one" 1, "two" 1}},
+          d2 {:type :document,
+              :filename "d2",
+              :content "two three",
+              :vector {"two" 1, "three" 1}}]
+      (is (= (vocabulary (list d1 d2))
+             {"one" 1,
+              "two" 2,
+              "three" 1})))))
 
 (deftest term-index-test
   (testing "simple"
@@ -216,8 +226,8 @@ Their mother tell them \"shut up your mout' \"
         d (make-document-from-file filename)
         existing-term "daddy"
         nonexisting-term "doesnotexist"
-        existing-lookup (lookup-term-in-document existing-term (:vector d))
-        nonexisting-lookup (lookup-term-in-document nonexisting-term (:vector d))]
+        existing-lookup (lookup-term-in-document existing-term d)
+        nonexisting-lookup (lookup-term-in-document nonexisting-term d)]
     (is (= existing-lookup 2))
     (is (= nonexisting-lookup nil))))
 
@@ -231,6 +241,6 @@ Their mother tell them \"shut up your mout' \"
           d (make-document-from-file filename)
           x (get-inverted-list-entry "daddy" d)
           doesnotexist (get-inverted-list-entry "doesnotexist" d)]
-      (is (= x {filename 2}))
+      (is (= x [filename 2]))
       (is (= doesnotexist nil)))))
 
