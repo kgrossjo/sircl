@@ -1,5 +1,6 @@
 (ns sircl.index
-  (:require [clojure.java.io :as io]
+  (:require [sircl.util :refer :all]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.set :as set]))
 
@@ -102,8 +103,8 @@ Expects a list of Documents."
   "Maps terms to the documents they appear in, with term frequency.
 Use file names to identify documents."
   [collection]
-  (into {} (map (fn [t] [t (term-index t (:documents collection))])
-                (keys (:vocabulary collection)))))
+  (map-hash (fn [t] (term-index t (:documents collection)))
+            (keys (:vocabulary collection))))
 
 (defn make-indexed-collection
   [document-collection]
