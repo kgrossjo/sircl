@@ -77,7 +77,7 @@ Expects a list of Documents."
 (defn make-collection
   [directory & {:keys [nfiles] }]
   (let [tree (file-seq (io/file directory))
-        files (filter (fn [x] (.isFile x)) tree)
+        files (map (fn [f] (.getPath f)) (filter (fn [x] (.isFile x)) tree))
         maybe-shortened (if nfiles (take nfiles files) files)
         documents (map make-document-from-file files)]
     ;; I tried defrecord but that wasn't serialized
