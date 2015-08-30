@@ -69,6 +69,22 @@ The formula used for ranking is pretty braindead.
 
 There is no UI to speak of.
 
+There is no real persistence layer, it's just cheating.  At least we
+should be able to avoid reading the whole index into main memory every
+time.  I think there is no point in using something sophisticated, but
+maybe key/value store for the inverted index would be nice, or perhaps
+also for the document vectors.
+
+It would be nice to have incremental indexing, i.e. to make it
+possible to add a document to the collection without redoing all the
+work.  Hm.  I think we need to compute the document vector for the
+added document and then we need to go through it and load each
+inverted list and add the entry to it and then save the inverted list
+again.  It would be even better to find some on-disk format that
+allows us to augment the inverted list without having to read it into
+main memory, but touching just the changed inverted lists is a step
+forward.
+
 
 ## License
 
